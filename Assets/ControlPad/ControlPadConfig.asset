@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4874f23eb5cd4b37ad00661ad301cdc, type: 3}
+  m_Name: ControlPadConfig
+  m_EditorClassIdentifier: 
+  targets:
+  - id: layout-3
+    displayName: "\u5E03\u5C403"
+    host: 172.16.10.201
+    port: 5005
+    thumbnailManifestUrl: http://172.16.10.201:8080/api/layout-3/items
+  - id: layout-4
+    displayName: "\u5E03\u5C404"
+    host: 192.168.1.102
+    port: 5005
+    thumbnailManifestUrl: http://192.168.1.102:8080/manifest.json
+  - id: layout-5-6
+    displayName: "\u5E03\u5C405+6"
+    host: 172.16.10.201
+    port: 5005
+    thumbnailManifestUrl: http://192.168.1.103:8080/manifest.json
+  - id: layout-9-10
+    displayName: "\u5E03\u5C409+10"
+    host: 192.168.1.104
+    port: 5005
+    thumbnailManifestUrl: http://192.168.1.104:8080/manifest.json
+  - id: layout-11
+    displayName: "\u5E03\u5C4011"
+    host: 192.168.1.105
+    port: 5005
+    thumbnailManifestUrl: http://192.168.1.105:8080/manifest.json
+  - id: layout-12
+    displayName: "\u5E03\u5C4012"
+    host: 192.168.1.106
+    port: 5005
+    thumbnailManifestUrl: http://192.168.1.106:8080/manifest.json
+  coreMovieTarget:
+    id: core-movie
+    displayName: "\u6838\u5FC3\u5F71\u7247\u7535\u8111"
+    host: 192.168.1.107
+    port: 5005
