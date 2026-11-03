@@ -2,6 +2,10 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+# Local layered source artwork exceeds GitHub's regular Git file limit.
+/Assets/中控/中控.psb
+/Assets/中控/中控.psb.meta
+
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
