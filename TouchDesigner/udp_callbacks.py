@@ -1,4 +1,4 @@
-"""UDP In DAT callback: parse one Unity packet and show it in text1."""
+"""UDP In DAT callback: show Unity's packet and pass it to command_router."""
 import json
 
 
@@ -13,6 +13,13 @@ def onReceive(dat, rowIndex, message, bytes, peer):
             debug("找不到 Text DAT: text1", packet)
         else:
             output.text = json.dumps(packet, ensure_ascii=False, indent=2)
+
+        router = op("command_router")
+        if router is not None:
+            try:
+                router.module.handle(packet)
+            except Exception as route_error:
+                debug("UDP 指令处理失败:", repr(route_error), packet)
 
     except Exception as e:
         output = op("text1")

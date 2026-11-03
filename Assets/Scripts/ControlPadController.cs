@@ -126,8 +126,8 @@ namespace Qianhai.UI
             Wire(coreBackButton, ReturnHome);
             Wire(layoutBackButton, ReturnHome);
             Wire(refreshButton, () => gallery?.Refresh());
-            Wire(homeBackButton, () => Show(standbyPanel));
-            foreach (var homeButton in goHomeButtons) Wire(homeButton, () => Show(homePanel));
+            Wire(homeBackButton, ReturnToStandby);
+            foreach (var homeButton in goHomeButtons) Wire(homeButton, ReturnHome);
             foreach (var entry in layouts)
             {
                 if (entry == null || entry.button == null) continue;
@@ -161,7 +161,24 @@ namespace Qianhai.UI
             udpClient?.Send(targetId, "select-layout");
         }
 
-        public void ReturnHome() => Show(homePanel);
+        public void ReturnHome()
+        {
+            SendLayoutReset();
+            Show(homePanel);
+        }
+
+        private void ReturnToStandby()
+        {
+            SendLayoutReset();
+            Show(standbyPanel);
+        }
+
+        private void SendLayoutReset()
+        {
+            SendAll("back", value: "layout");
+            SendCore("back", value: "layout");
+        }
+
         public void ReturnToLayouts() => ReturnToLayouts(selectedTargetId);
 
         public void ReturnToLayouts(string targetId)
@@ -206,23 +223,11 @@ namespace Qianhai.UI
         private void SetLanguage(string value)
         {
             language = value;
-            udpClient?.SetLanguage(language);
             ApplyLanguageVisuals();
-            SendCore("language", value: language);
+            udpClient?.BroadcastLanguage(language);
         }
 
-        private void SetGlobalLanguage(string value)
-        {
-            language = value;
-            udpClient?.SetLanguage(language);
-            ApplyLanguageVisuals();
-            // Only control the computer belonging to the currently open page.
-            var submenu = FindSubmenu(selectedTargetId);
-            if ((detailPanel != null && detailPanel.activeSelf) || (submenu != null && submenu.gameObject.activeSelf))
-                udpClient?.Send(selectedTargetId, "language", value: language);
-            else if (coreMoviePanel != null && coreMoviePanel.activeSelf)
-                SendCore("language", value: language);
-        }
+        private void SetGlobalLanguage(string value) => SetLanguage(value);
 
         private void PlayCoreMovie()
         {

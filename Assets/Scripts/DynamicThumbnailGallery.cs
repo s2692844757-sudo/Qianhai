@@ -396,7 +396,7 @@ namespace Qianhai.ControlPad
         {
             language = value;
             ApplyHeaderLanguageVisuals();
-            udpClient?.Send(targetId, "language", value: language);
+            udpClient?.BroadcastLanguage(language);
         }
 
         private void ApplyHeaderLanguageVisuals()
