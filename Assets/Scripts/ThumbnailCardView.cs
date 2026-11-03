@@ -88,16 +88,24 @@ namespace Qianhai.UI
                 if (request.result == UnityWebRequest.Result.Success)
                 {
                     var texture = DownloadHandlerTexture.GetContent(request);
-                    if (thumbnail != null)
-                    {
-                        ownedSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f));
-                        thumbnail.sprite = ownedSprite;
-                        thumbnail.enabled = true;
-                        if (hideTitleWhenThumbnailLoaded && titleLabel != null)
-                            titleLabel.gameObject.SetActive(false);
-                    }
+                    ApplyThumbnailTexture(texture);
                 }
             }
+        }
+
+        private void ApplyThumbnailTexture(Texture2D texture)
+        {
+            if (texture == null) return;
+            if (thumbnail == null)
+            {
+                Destroy(texture);
+                return;
+            }
+            ownedSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f));
+            thumbnail.sprite = ownedSprite;
+            thumbnail.enabled = true;
+            if (hideTitleWhenThumbnailLoaded && titleLabel != null)
+                titleLabel.gameObject.SetActive(false);
         }
 
         private void OnDestroy()

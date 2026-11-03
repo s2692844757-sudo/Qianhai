@@ -10,6 +10,7 @@ namespace Qianhai.ControlPad
     {
         [SerializeField] private ControlPadConfig config;
         private UdpClient client;
+        private string language = "zh-CN";
 
         [Serializable]
         private sealed class CommandPacket
@@ -18,6 +19,7 @@ namespace Qianhai.ControlPad
             public string targetId;
             public string assetId;
             public string value;
+            public string language;
             public long sentAtUnixMs;
         }
 
@@ -28,6 +30,11 @@ namespace Qianhai.ControlPad
         }
 
         public void Configure(ControlPadConfig value) => config = value;
+
+        public void SetLanguage(string value)
+        {
+            if (value == "zh-CN" || value == "en-US") language = value;
+        }
 
         public bool Send(string targetId, string command, string assetId = "", string value = "")
         {
@@ -50,6 +57,7 @@ namespace Qianhai.ControlPad
                 targetId = targetId,
                 assetId = assetId ?? string.Empty,
                 value = value ?? string.Empty,
+                language = language,
                 sentAtUnixMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
             var bytes = Encoding.UTF8.GetBytes(JsonUtility.ToJson(packet));

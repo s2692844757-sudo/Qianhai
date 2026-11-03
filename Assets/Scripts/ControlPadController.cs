@@ -82,12 +82,17 @@ namespace Qianhai.UI
         private float volume = 1f;
         private bool muted;
         private enum CorePlaybackState { None, Playing, Paused }
-        private CorePlaybackState corePlaybackState = CorePlaybackState.Playing;
-        private static readonly Color PlaybackSelectedColor = new Color(.46f, .62f, 1f, 1f);
+        private CorePlaybackState corePlaybackState = CorePlaybackState.None;
+        // Keep the active playback control visibly saturated on the pale panel.
+        private static readonly Color PlaybackSelectedColor = new Color(.22f, .40f, .96f, 1f);
 
         private void Awake()
         {
-            if (udpClient != null) udpClient.Configure(config);
+            if (udpClient != null)
+            {
+                udpClient.Configure(config);
+                udpClient.SetLanguage(language);
+            }
             Wire(startButton, () => { SendAll("wake"); SendCore("wake"); Show(homePanel); });
             Wire(coreMovieButton, () => Show(coreMoviePanel));
             Wire(graphicInteractionButton, () => Show(layoutPanel));
@@ -143,7 +148,11 @@ namespace Qianhai.UI
             var target = config != null ? config.GetTarget(targetId) : null;
             if (detailTitle != null) detailTitle.text = target != null ? target.displayName : targetId;
             var submenu = FindSubmenu(targetId);
-            if (submenu != null) Show(submenu.gameObject);
+            if (submenu != null)
+            {
+                submenu.ClearSelection();
+                Show(submenu.gameObject);
+            }
             else
             {
                 Show(detailPanel);
@@ -153,7 +162,17 @@ namespace Qianhai.UI
         }
 
         public void ReturnHome() => Show(homePanel);
-        public void ReturnToLayouts() => Show(layoutPanel);
+        public void ReturnToLayouts() => ReturnToLayouts(selectedTargetId);
+
+        public void ReturnToLayouts(string targetId)
+        {
+            if (!string.IsNullOrWhiteSpace(targetId))
+            {
+                selectedTargetId = targetId;
+                udpClient?.Send(targetId, "back", value: "layout");
+            }
+            Show(layoutPanel);
+        }
 
         public void SelectCategory(LayoutSubmenuPage page, LayoutSubmenuPage.Category category)
         {
@@ -179,12 +198,15 @@ namespace Qianhai.UI
         private void BackFromDetail()
         {
             var submenu = FindSubmenu(selectedTargetId);
+            udpClient?.Send(selectedTargetId, "back", value: submenu != null ? "category" : "layout");
+            submenu?.ClearSelection();
             Show(submenu != null ? submenu.gameObject : layoutPanel);
         }
 
         private void SetLanguage(string value)
         {
             language = value;
+            udpClient?.SetLanguage(language);
             ApplyLanguageVisuals();
             SendCore("language", value: language);
         }
@@ -192,6 +214,7 @@ namespace Qianhai.UI
         private void SetGlobalLanguage(string value)
         {
             language = value;
+            udpClient?.SetLanguage(language);
             ApplyLanguageVisuals();
             // Only control the computer belonging to the currently open page.
             var submenu = FindSubmenu(selectedTargetId);
@@ -308,8 +331,9 @@ namespace Qianhai.UI
         {
             if (activePanel == coreMoviePanel && coreMoviePanel != null && !coreMoviePanel.activeSelf)
             {
-                // This is the page's default visual only; navigation must not trigger playback.
-                corePlaybackState = CorePlaybackState.Playing;
+                // Clear the previous playback highlight each time the page opens.
+                corePlaybackState = CorePlaybackState.None;
+                if (playButton != null) playButton.interactable = true;
                 ApplyPlaybackVisuals();
                 ApplyAudioVisuals();
             }

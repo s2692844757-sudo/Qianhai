@@ -26,7 +26,7 @@ namespace Qianhai.UI
 
         public void Initialize(ControlPadController controller)
         {
-            if (backButton != null) backButton.onClick.AddListener(controller.ReturnToLayouts);
+            if (backButton != null) backButton.onClick.AddListener(() => controller.ReturnToLayouts(targetId));
             if (homeButton != null) homeButton.onClick.AddListener(controller.ReturnHome);
             foreach (var entry in categories)
             {
@@ -38,8 +38,10 @@ namespace Qianhai.UI
                     controller.SelectCategory(this, category);
                 });
             }
-            if (categories.Length > 0 && categories[0] != null) Select(categories[0].id);
+            ClearSelection();
         }
+
+        public void ClearSelection() => Select(null);
 
         private void Select(string id)
         {

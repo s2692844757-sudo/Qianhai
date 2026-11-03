@@ -152,6 +152,9 @@ namespace Qianhai.ControlPad
             config = source;
             udpClient = client;
             targetId = id;
+            // A new navigation entry always starts on the animation/video tab.
+            mediaTypeFilter = "video";
+            ApplyModeLayout();
             Refresh();
         }
 
@@ -229,10 +232,20 @@ namespace Qianhai.ControlPad
             if (scroll != null) scroll.normalizedPosition = new Vector2(0, 1);
             SetStatus(cards.Count == 0 ? (imageMode ? "暂无图片素材" : "暂无动画素材，可切换图片查看") : "");
             if (cards.Count > 0)
-                cards[0].GetComponent<ThumbnailCardView>().SelectCard();
+            {
+                var firstCard = cards[0].GetComponent<ThumbnailCardView>();
+                if (firstCard != null) UpdateSelection(firstCard.MediaItem, false);
+            }
         }
 
-        private void SelectItem(ThumbnailManifest.MediaItem item) => UpdateSelection(item, true);
+        private void SelectItem(ThumbnailManifest.MediaItem item)
+        {
+            UpdateSelection(item, true);
+            // A deliberate video-card tap uses the same `play` command as the
+            // Play control; S/ in assetId identifies the selected video.
+            if (item != null && string.Equals(item.mediaType, "video", StringComparison.OrdinalIgnoreCase))
+                SendSelectedControl("play");
+        }
 
         private void UpdateSelection(ThumbnailManifest.MediaItem item, bool centerOnSelection)
         {
