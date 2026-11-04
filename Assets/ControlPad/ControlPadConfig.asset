@@ -15,36 +15,36 @@ MonoBehaviour:
   targets:
   - id: layout-3
     displayName: "\u5E03\u5C403"
-    host: 192.168.1.4
+    host: 192.168.35.12
     port: 5005
-    thumbnailManifestUrl: http://192.168.1.4:8080/api/layout-3/items
+    thumbnailManifestUrl: http://192.168.35.12:8080/api/layout-3/items
   - id: layout-4
     displayName: "\u5E03\u5C404"
-    host: 192.168.1.4
+    host: 192.168.35.13
     port: 5005
-    thumbnailManifestUrl: http://192.168.1.4:8080/api/layout-3/items
+    thumbnailManifestUrl: http://192.168.35.13:8080/api/layout-3/items
   - id: layout-5-6
     displayName: "\u5E03\u5C405+6"
-    host: 192.168.1.4
+    host: 192.168.35.14
     port: 5005
-    thumbnailManifestUrl: http://192.168.1.4:8080/api/layout-3/items
+    thumbnailManifestUrl: http://192.168.35.14:8080/api/layout-3/items
   - id: layout-9-10
     displayName: "\u5E03\u5C409+10"
-    host: 172.16.10.201
+    host: 192.168.35.15
     port: 5005
-    thumbnailManifestUrl: http://172.16.10.201:8080/api/layout-3/items
+    thumbnailManifestUrl: http://192.168.35.15:8080/api/layout-3/items
   - id: layout-11
     displayName: "\u5E03\u5C4011"
-    host: 172.16.10.201
+    host: 192.168.35.16
     port: 5005
-    thumbnailManifestUrl: http://172.16.10.201:8080/api/layout-3/items
+    thumbnailManifestUrl: http://192.168.35.16:8080/api/layout-3/items
   - id: layout-12
     displayName: "\u5E03\u5C4012"
-    host: 172.16.10.201
+    host: 192.168.35.17
     port: 5005
-    thumbnailManifestUrl: http://172.16.10.201:8080/api/layout-3/items
+    thumbnailManifestUrl: http://192.168.35.17:8080/api/layout-3/items
   coreMovieTarget:
     id: core-movie
     displayName: "\u6838\u5FC3\u5F71\u7247\u7535\u8111"
-    host: 172.16.10.201
+    host: 192.168.35.11
     port: 5005

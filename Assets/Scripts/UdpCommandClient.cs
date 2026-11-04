@@ -11,7 +11,11 @@ namespace Qianhai.ControlPad
 {
     public sealed class UdpCommandClient : MonoBehaviour
     {
+        private const string Layout9And10TargetId = "layout-9-10";
+
         [SerializeField] private ControlPadConfig config;
+        [Header("临时禁用目标")]
+        [SerializeField] private bool enableLayout9And10;
         private UdpClient client;
         private readonly SemaphoreSlim sendGate = new SemaphoreSlim(1, 1);
         private bool shuttingDown;
@@ -63,6 +67,9 @@ namespace Qianhai.ControlPad
 
         public bool Send(string targetId, string command, string assetId = "", string value = "")
         {
+            if (!enableLayout9And10 && string.Equals(targetId, Layout9And10TargetId, StringComparison.OrdinalIgnoreCase))
+                return false;
+
             if (config == null || !config.TryGetUdpEndpoint(targetId, out var host, out var port))
             {
                 Debug.LogWarning("没有配置 UDP 目标：" + targetId, this);

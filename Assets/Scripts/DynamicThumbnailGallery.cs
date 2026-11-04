@@ -37,6 +37,7 @@ namespace Qianhai.ControlPad
         private GameObject imageModeRoot;
         private GameObject videoModeRoot;
         private Text selectedTitleLabel;
+        private Text selectedThumbnailTitleLabel;
         private Button imageTabButton;
         private Button videoTabButton;
         private Image headerChineseArtwork;
@@ -52,6 +53,7 @@ namespace Qianhai.ControlPad
             imageModeRoot = transform.Find("ImageModeRoot")?.gameObject;
             videoModeRoot = transform.Find("VideoModeRoot")?.gameObject;
             selectedTitleLabel = transform.Find("VideoModeRoot/SelectedTitleLabel")?.GetComponent<Text>();
+            selectedThumbnailTitleLabel = transform.Find("ImageModeRoot/SelectedThumbnailFrame/Title")?.GetComponent<Text>();
             imageTabButton = transform.Find("ImagesTabButton")?.GetComponent<Button>();
             videoTabButton = transform.Find("VideosTabButton")?.GetComponent<Button>();
             headerChineseArtwork = transform.Find("HeaderLanguageRoot/ChineseButton/Artwork")?.GetComponent<Image>();
@@ -152,6 +154,9 @@ namespace Qianhai.ControlPad
             config = source;
             udpClient = client;
             targetId = id;
+            muted = true;
+            ApplyAudioVisuals();
+            udpClient?.Send(targetId, "mute", value: "true");
             // A new navigation entry always starts on the animation/video tab.
             mediaTypeFilter = "video";
             ApplyModeLayout();
@@ -241,10 +246,6 @@ namespace Qianhai.ControlPad
         private void SelectItem(ThumbnailManifest.MediaItem item)
         {
             UpdateSelection(item, true);
-            // A deliberate video-card tap uses the same `play` command as the
-            // Play control; S/ in assetId identifies the selected video.
-            if (item != null && string.Equals(item.mediaType, "video", StringComparison.OrdinalIgnoreCase))
-                SendSelectedControl("play");
         }
 
         private void UpdateSelection(ThumbnailManifest.MediaItem item, bool centerOnSelection)
@@ -283,6 +284,8 @@ namespace Qianhai.ControlPad
                 }
             }
             if (selectedTitleLabel != null) selectedTitleLabel.text = $"— {item.title} —";
+            if (selectedThumbnailTitleLabel != null)
+                selectedThumbnailTitleLabel.text = string.IsNullOrWhiteSpace(item.title) ? item.id : item.title;
             if (mediaTypeFilter == "image" && selectedPreview != null)
             {
                 var view = cards.Find(card => card != null && card.GetComponent<ThumbnailCardView>().AssetId == item.id)?.GetComponent<ThumbnailCardView>();
@@ -423,6 +426,7 @@ namespace Qianhai.ControlPad
             if (selectedThumbnailOverlay != null) selectedThumbnailOverlay.sprite = null;
             ReleasePreview();
             if (selectedTitleLabel != null) selectedTitleLabel.text = "— 影片名称 —";
+            if (selectedThumbnailTitleLabel != null) selectedThumbnailTitleLabel.text = "";
             SetControlHighlight("PlayCommandButton", false);
             SetControlHighlight("PauseCommandButton", false);
             foreach (var card in cards) if (card != null) Destroy(card);

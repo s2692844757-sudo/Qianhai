@@ -34,7 +34,14 @@ namespace Qianhai.UI
             item = mediaItem;
             selected = onSelected;
             if (thumbnail != null) thumbnail.enabled = false;
-            if (titleLabel != null) titleLabel.text = mediaItem != null ? mediaItem.title : "";
+            if (titleLabel != null)
+            {
+                var title = mediaItem != null ? mediaItem.title : "";
+                if (string.IsNullOrWhiteSpace(title) && mediaItem != null)
+                    title = mediaItem.id;
+                titleLabel.text = title;
+                titleLabel.gameObject.SetActive(true);
+            }
             if (selectButton != null)
             {
                 selectButton.onClick.RemoveListener(Select);
